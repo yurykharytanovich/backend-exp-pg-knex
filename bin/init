@@ -1,0 +1,2 @@
+#!/bin/bash
+./bin/init_env && ./bin/init_db

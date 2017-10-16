@@ -1,0 +1,23 @@
+#!/bin/bash
+if [ -z $1 ]
+  then
+    echo 'You must to pass DB username.';
+    exit 1;
+fi
+
+if [ -z $2 ]
+    then
+       echo 'You must to pass DB password.';
+       exit 1;
+fi
+
+rm ./.env;
+cp ./.env.sample ./.env;
+
+sed -i -e 's/DB_USER=/DB_USER='"$1"'/g' ./.env;
+sed -i -e 's/DB_PASS=/DB_PASS='"$2"'/g' ./.env;
+
+if [ ! -z $3 ]
+  then
+      sed -i -e 's/DB_NAME=/DB_NAME='"$3"'/g' ./.env;
+fi
