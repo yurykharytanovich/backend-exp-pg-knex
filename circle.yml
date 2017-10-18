@@ -1,4 +1,7 @@
 machine:
+  node:
+      version: 8.7.0
+
   environment:
     DATABASE_URL: postgresql://ubuntu:@127.0.0.1:5432/circle_test
     host: 127.0.0.1
