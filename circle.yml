@@ -1,0 +1,27 @@
+machine:
+  environment:
+    DATABASE_URL: postgresql://ubuntu:@127.0.0.1:5432/circle_test
+    host: 127.0.0.1
+    user: ubuntu
+    password:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
+
+dependencies:
+  pre:
+    - sudo apt-get install python-dev
+    - sudo pip install 'awsebcli==3.7.4' --force-reinstall
+  override:
+    - yarn
+  cache_directories:
+    - ~/.cache/yarn
+
+test:
+  override:
+    - yarn up && yarn test
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - ./scripts/setup-eb.sh
+      - yarn deploy
