@@ -1,11 +1,11 @@
-import { TABLES } from '../constants'
+import { TABLES } from '../constants';
 
-const cols = TABLES.ITEMS.COLUMNS
+const cols = TABLES.ITEMS.COLUMNS;
 
-export function formatItemForInsertion(item) {
+export function formatItemForAdding(item) {
     item = {
-        [cols.NAME]: item[cols.NAME]
-    }
+        [cols.NAME]: item[cols.NAME],
+    };
 
-    return item
+    return item;
 }

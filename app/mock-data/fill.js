@@ -1,13 +1,13 @@
-import { fillDataBaseWithMockData } from './'
+import { fillDataBaseWithMockData } from './';
 
 async function fill() {
     try {
-        await fillDataBaseWithMockData()
+        await fillDataBaseWithMockData();
     } catch (error) {
-        console.dir(error)
+        console.dir(error);
     } finally {
-        process.exit(0)
+        process.exit(0);
     }
 }
 
-fill()
+fill();

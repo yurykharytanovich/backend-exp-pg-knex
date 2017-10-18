@@ -1,11 +1,11 @@
-import { TABLES } from '../constants'
+import { TABLES } from '../constants';
 
-const cols = TABLES.USERS.COLUMNS
+const cols = TABLES.USERS.COLUMNS;
 
-export function formatUserForInsertion(user) {
+export function formatUserForAdding(user) {
     user = {
-        [cols.NAME]: user[cols.NAME]
-    }
+        [cols.NAME]: user[cols.NAME],
+    };
 
-    return user
+    return user;
 }

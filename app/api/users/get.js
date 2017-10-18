@@ -1,56 +1,54 @@
-import { manyOrNone, oneOrNone } from '../../db/index'
-import { getSelectUserByIdQuery, getSelectAllItemsOfUserQuery, getSelectAllUsersQuery } from '../../sql-helpers'
-import { success, reject } from '../index'
-import { ROUTES } from '../../constants'
-import { isValidUUID } from '../../helpers'
+import { success, reject } from '../index';
+import { ROUTES } from '../../constants';
+import { isValidUUID } from '../../helpers';
+import * as UsersService from '../../services/users';
 
 export async function getAllUsers(req, res) {
     try {
-        const users = await manyOrNone(getSelectAllUsersQuery())
+        const users = await UsersService.getAllUsers();
 
-        return success(res, { users })
+        return success(res, { users });
     } catch (error) {
-        return reject(res, { error })
+        return reject(res, { error });
     }
 }
 
 export async function getUserById(req, res) {
     try {
-        const id = req.params[ROUTES.USERS.IDp]
+        const userId = req.params[ROUTES.USERS.ID];
 
-        if(!isValidUUID(id)) {
-            return reject(res, { id }, `Bad ${[ROUTES.USERS.IDp]} passed`)
+        if(!isValidUUID(userId)) {
+            return reject(res, { userId }, `Bad ${ROUTES.USERS.ID} passed`);
         }
 
-        const user = await oneOrNone(getSelectUserByIdQuery(id))
+        const user = await UsersService.getUser(userId);
         if(!user) {
-            return reject(res, { id }, 'User with passed id does not exist.')
+            return reject(res, { userId }, 'User with passed id does not exist.');
         }
 
-        return success(res, { user })
+        return success(res, { user });
     } catch (error) {
-        return reject(res, { error })
+        return reject(res, { error });
     }
 }
 
 export async function getAllItemsOfUser(req, res) {
     try {
-        const id =  req.params[ROUTES.USERS.IDp]
+        const userId =  req.params[ROUTES.USERS.ID];
 
-        if(!isValidUUID(id)) {
-            return reject(res, { id }, `Bad ${[ROUTES.USERS.IDp]} passed`)
+        if(!isValidUUID(userId)) {
+            return reject(res, { userId }, `Bad ${ROUTES.USERS.ID} passed`);
         }
 
-        const user = await oneOrNone(getSelectUserByIdQuery(id))
+        const user = await UsersService.getUser(userId);
         if(!user) {
-            return reject(res, { id }, 'User with passed id does not exist.')
+            return reject(res, { userId }, 'User with passed id does not exist.');
         }
 
-        const userItems = await manyOrNone(getSelectAllItemsOfUserQuery(id))
+        const items = await UsersService.getAllItemsOfUser(userId);
 
-        return success(res, { userItems })
+        return success(res, { items });
     } catch (error) {
-        console.log(error)
-        return reject(res, { error })
+        return reject(res, { error });
     }
 }

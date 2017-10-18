@@ -1,10 +1,10 @@
-import 'babel-polyfill'
-import app from './app'
-import dotenv from 'dotenv'
+import 'babel-polyfill';
+import app from './app';
+import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
-const port = process.env.PORT || 3010
+const port = process.env.PORT || 3010;
 app.listen(port, () => {
-    console.log(`Application server started at http://localhost:${port}`)
-})
+    console.log(`Application server started at http://localhost:${port}`);
+});

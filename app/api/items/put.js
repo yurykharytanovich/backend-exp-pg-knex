@@ -1,45 +1,41 @@
-import { one, oneOrNone } from '../../db'
-import { TABLES, ROUTES } from '../../constants'
-import { isValidUUID, isValidItemUpdate } from '../../helpers'
-import { success, reject } from '../'
-import _ from 'lodash'
-import { getSelectItemByIdQuery, getUpdateItemByIdQuery, getSelectItemByNameQuery } from '../../sql-helpers'
+import { TABLES, ROUTES } from '../../constants';
+import { isValidUUID, isValidItemUpdate, getValidUpdate } from '../../helpers';
+import { success, reject } from '../';
+import * as ItemsService from '../../services/items';
 
 export async function updateItem (req, res) {
     try {
-        const id = req.params[ROUTES.ITEMS.IDp]
+        const itemId = req.params[ROUTES.ITEMS.ID];
 
-        if(!isValidUUID(id)) {
-            return reject(res, { id }, `Bad ${ROUTES.ITEMS.IDp} passed`)
+        if(!isValidUUID(itemId)) {
+            return reject(res, { itemId }, `Bad ${ROUTES.ITEMS.ID} passed`);
         }
 
-        const item = await oneOrNone(getSelectItemByIdQuery(id))
+        const item = await ItemsService.getItem(itemId);
         if(!item) {
-            return reject(res, { id }, `Item with passed id does not exist.`)
+            return reject(res, { itemId }, `Item with passed id does not exist.`);
         }
 
-        const cols = TABLES.ITEMS.COLUMNS
-        const itemUpdate = {}
-        const putValues = {
-            [cols.NAME]: true
-        }
+        const cols = TABLES.ITEMS.COLUMNS;
+        const itemUpdate = getValidUpdate(req.body.item, [
+            cols.NAME,
+        ]);
 
-        _.keys(req.body).filter(key => putValues[key]).forEach(key => itemUpdate[key] = req.body[key])
-
-        const itemUpdateValidationInfo = isValidItemUpdate(itemUpdate)
+        const itemUpdateValidationInfo = isValidItemUpdate(itemUpdate);
         if(itemUpdateValidationInfo) {
-            return reject(res, { itemUpdateValidationInfo }, 'Invalid item data passed.')
+            return reject(res, { itemUpdateValidationInfo }, 'Invalid item data passed.');
         }
 
-        const itemWithName = await oneOrNone(getSelectItemByNameQuery(itemUpdate[TABLES.ITEMS.COLUMNS.NAME]))
+        const itemName = itemUpdate[TABLES.ITEMS.COLUMNS.NAME];
+        const itemWithName = await ItemsService.getItemByName(itemName);
         if (itemWithName) {
-            return reject(res, { [TABLES.ITEMS.COLUMNS.NAME]: itemUpdate[TABLES.ITEMS.COLUMNS.NAME] }, 'Name is already in use.')
+            return reject(res, { [TABLES.ITEMS.COLUMNS.NAME]: itemUpdate[TABLES.ITEMS.COLUMNS.NAME] }, 'Name is already in use.');
         }
 
-        const result = await one(getUpdateItemByIdQuery(id, itemUpdate))
+        const result = await ItemsService.updateItem(itemId, itemUpdate);
 
-        return success(res, { result })
+        return success(res, { result });
     } catch (error) {
-        return reject(res, { error }, 'Update NOT OK')
+        return reject(res, { error }, 'Update NOT OK');
     }
 }

@@ -1,27 +1,27 @@
-import { oneOrNone, one, manyOrNone } from '../../db'
-import { ROUTES } from '../../constants'
-import { isValidUUID } from '../../helpers'
-import { success, reject } from '../'
-import { getDeleteItemByIdQuery, getDeleteAllUsersOfItemQuery } from '../../sql-helpers'
-import { getSelectItemByIdQuery } from '../../sql-helpers/items'
+import { ROUTES } from '../../constants';
+import { isValidUUID } from '../../helpers';
+import { success, reject } from '../';
+import * as ItemsService from '../../services/items';
 
 export async function deleteItem (req, res) {
     try {
-        const id = req.params[ROUTES.ITEMS.IDp]
+        const itemId = req.params[ROUTES.ITEMS.ID];
 
-        if(!isValidUUID(id)) {
-            return reject(res, { id }, `Bad ${[ROUTES.ITEMS.IDp]} passed`)
+        if(!isValidUUID(itemId)) {
+            return reject(res, { itemId }, `Bad ${ROUTES.ITEMS.ID} passed`);
         }
 
-        let item = await oneOrNone(getSelectItemByIdQuery(id))
+        let item = await ItemsService.getItem(itemId);
         if(!item) {
-            return reject(res, { id }, 'Item with passed id does not exist.')
+            return reject(res, { itemId }, 'Item with passed id does not exist.');
         }
 
-        item = await one(getDeleteItemByIdQuery(id))
+        await ItemsService.deleteItemFromAllUsers(itemId);
 
-        return success(res, { item })
+        item = await ItemsService.deleteItem(itemId);
+
+        return success(res, { item });
     } catch (error) {
-        return reject(res, { error }, 'Delete NOT OK')
+        return reject(res, { error }, 'Delete NOT OK');
     }
 }

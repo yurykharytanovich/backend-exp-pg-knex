@@ -1,22 +1,22 @@
-import squel from 'squel'
-import { TABLES } from '../constants'
+import squel from 'squel';
+import { TABLES } from '../constants';
 
-const squelPostgres = squel.useFlavour('postgres')
+const squelPostgres = squel.useFlavour('postgres');
 
-const table = TABLES.USERS
-const cols = table.COLUMNS
+const table = TABLES.USERS;
+const cols = table.COLUMNS;
 
 export function getSelectAllUsersQuery() {
     return squel.select()
         .from(table.NAME)
-        .toString()
+        .toString();
 }
 
 export function getSelectUserByIdQuery(id) {
     return squel.select()
         .from(table.NAME)
         .where(`id = '${id}'`)
-        .toString()
+        .toString();
 }
 
 export function getDeleteUserByIdQuery(id) {
@@ -24,15 +24,18 @@ export function getDeleteUserByIdQuery(id) {
         .from(table.NAME)
         .where(`id = '${id}'`)
         .returning('*')
-        .toString()
+        .toString();
 }
 
 export function getInsertUserQuery(values) {
-    return squelPostgres.insert()
+
+    let a = squelPostgres.insert()
         .into(table.NAME)
         .setFields(values)
         .returning('*')
-        .toString()
+        .toString();
+
+    return a;
 }
 
 export function getUpdateUserByIdQuery(id, values) {
@@ -41,12 +44,12 @@ export function getUpdateUserByIdQuery(id, values) {
         .setFields(values)
         .where(`id = '${id}'`)
         .returning('*')
-        .toString()
+        .toString();
 }
 
 export function getSelectUserByNameQuery(name) {
     return squel.select()
         .from(table.NAME)
         .where(`${cols.NAME} = '${name}'`)
-        .toString()
+        .toString();
 }

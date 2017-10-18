@@ -1,45 +1,44 @@
-import { one, oneOrNone } from '../../db'
-import { TABLES, ROUTES } from '../../constants'
-import { isValidUUID, isValidUserUpdate } from '../../helpers'
-import { success, reject } from '../'
-import _ from 'lodash'
-import { getSelectUserByIdQuery, getUpdateUserByIdQuery, getSelectUserByNameQuery } from '../../sql-helpers'
+import { TABLES, ROUTES } from '../../constants';
+import { isValidUUID, isValidUserUpdate } from '../../helpers';
+import { success, reject } from '../';
+import { getValidUpdate } from '../../helpers';
+import * as UsersService from '../../services/users';
 
 export async function updateUser (req, res) {
     try {
-        const id = req.params[ROUTES.USERS.IDp]
+        const userId = req.params[ROUTES.USERS.ID];
 
-        if(!isValidUUID(id)) {
-            return reject(res, { id }, `Bad ${ROUTES.USERS.IDp} passed`)
+        if(!isValidUUID(userId)) {
+            return reject(res, { userId }, `Bad ${ROUTES.USERS.ID} passed`);
         }
 
-        const user = await oneOrNone(getSelectUserByIdQuery(id))
+        const user = await UsersService.getUser(userId);
         if(!user) {
-            return reject(res, { id }, `User with passed id does not exist.`)
+            return reject(res, { userId }, `User with passed id does not exist.`);
         }
 
-        const cols = TABLES.USERS.COLUMNS
-        const userUpdate = {}
-        const putValues = {
-            [cols.NAME]: true
-        }
+        const cols = TABLES.USERS.COLUMNS;
+        const userUpdate = getValidUpdate(req.body.user, [
+            cols.NAME,
+        ]);
 
-        _.keys(req.body).filter(key => putValues[key]).forEach(key => userUpdate[key] = req.body[key])
+        const userUpdateValidationInfo = isValidUserUpdate(userUpdate);
 
-        const userUpdateValidationInfo = isValidUserUpdate(userUpdate)
         if(userUpdateValidationInfo) {
-            return reject(res, { userUpdateValidationInfo }, 'Invalid user data passed.')
+            return reject(res, { userUpdateValidationInfo }, 'Invalid user data passed.');
         }
 
-        const userWithName = await oneOrNone(getSelectUserByNameQuery(userUpdate[TABLES.USERS.COLUMNS.NAME]))
+        const userName = userUpdate[TABLES.USERS.COLUMNS.NAME];
+        const userWithName = await UsersService.getUserByName(userName);
+
         if (userWithName) {
-            return reject(res, { [TABLES.USERS.COLUMNS.NAME]: userUpdate[TABLES.USERS.COLUMNS.NAME] }, 'Name is already in use.')
+            return reject(res, { [TABLES.USERS.COLUMNS.NAME]: userUpdate[TABLES.USERS.COLUMNS.NAME] }, 'Name is already in use.');
         }
 
-        const result = await one(getUpdateUserByIdQuery(id, userUpdate))
+        const result = await UsersService.updateUser(userId, userUpdate);
 
-        return success(res, { result })
+        return success(res, { result });
     } catch (error) {
-        return reject(res, { error }, 'Update NOT OK')
+        return reject(res, { error }, 'Update NOT OK');
     }
 }

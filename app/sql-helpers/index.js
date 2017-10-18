@@ -1,29 +1,29 @@
-export * from './items'
-export * from './users'
-export * from './user_items'
+export * from './items';
+export * from './users';
+export * from './user_items';
 
-import squel from 'squel'
+import squel from 'squel';
 
-const squelPostgres = squel.useFlavour('postgres')
+const squelPostgres = squel.useFlavour('postgres');
 
 export function getSelectInstancesQuery(table) {
     return squel.select()
         .from(table)
-        .toString()
+        .toString();
 }
 
 export function getSelectInstanceByIdQuery(table, id) {
     return squel.select()
         .from(table)
         .where(`id = '${id}'`)
-        .toString()
+        .toString();
 }
 
 export function getSelectInstancesByIdsQuery(table, ids) {
     return squel.select()
         .from(table)
         .where(`id in (${ids.map(id => `'${id}'`)})`)
-        .toString()
+        .toString();
 }
 
 export function getInsertInstancesQuery(table, values) {
@@ -31,7 +31,7 @@ export function getInsertInstancesQuery(table, values) {
         .into(table)
         .setFieldsRows(values)
         .returning('*')
-        .toString()
+        .toString();
 }
 
 export function getUpdateInstanceByIdQuery(table, id, values) {
@@ -40,7 +40,7 @@ export function getUpdateInstanceByIdQuery(table, id, values) {
         .setFields(values)
         .where(`id = '${id}'`)
         .returning('*')
-        .toString()
+        .toString();
 }
 
 export function getDeleteInstancesByIdsQuery(table, ids) {
@@ -48,5 +48,5 @@ export function getDeleteInstancesByIdsQuery(table, ids) {
         .from(table)
         .where(`id in (${ids.map(id => `'${id}'`)})`)
         .returning('*')
-        .toString()
+        .toString();
 }

@@ -1,34 +1,33 @@
-import { manyOrNone, oneOrNone } from '../../db/index'
-import { getSelectAllItemsQuery, getSelectItemByIdQuery } from '../../sql-helpers'
-import { success, reject } from '../index'
-import { ROUTES } from '../../constants'
-import { isValidUUID } from '../../helpers'
+import * as ItemsService from '../../services/items';
+import { success, reject } from '../../api/index';
+import { ROUTES } from '../../constants';
+import { isValidUUID } from '../../helpers';
 
 export async function getAllItems(req, res) {
     try {
-        const items = await manyOrNone(getSelectAllItemsQuery())
+        const items = await ItemsService.getAllItems();
 
-        return success(res, { items })
+        return success(res, { items });
     } catch (error) {
-        return reject(res, { error })
+        return reject(res, { error });
     }
 }
 
 export async function getItemById(req, res) {
     try {
-        const id = req.params[ROUTES.ITEMS.IDp]
+        const itemId = req.params[ROUTES.ITEMS.ID];
 
-        if(!isValidUUID(id)) {
-            return reject(res, { id }, `Bad ${[ROUTES.ITEMS.IDp]} passed`)
+        if(!isValidUUID(itemId)) {
+            return reject(res, { itemId }, `Bad ${ROUTES.ITEMS.ID} passed`);
         }
 
-        const item = await oneOrNone(getSelectItemByIdQuery(id))
+        const item = await ItemsService.getItem(itemId);
         if(!item) {
-            return reject(res, { id }, 'Item with passed id does not exist.')
+            return reject(res, { itemId }, 'Item with passed id does not exist.');
         }
 
-        return success(res, { item })
+        return success(res, { item });
     } catch (error) {
-        return reject(res, { error })
+        return reject(res, { error });
     }
 }

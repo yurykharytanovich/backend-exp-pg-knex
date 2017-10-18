@@ -1,22 +1,22 @@
-import squel from 'squel'
-import { TABLES } from '../constants'
+import squel from 'squel';
+import { TABLES } from '../constants';
 
-const squelPostgres = squel.useFlavour('postgres')
+const squelPostgres = squel.useFlavour('postgres');
 
-const table = TABLES.ITEMS
-const cols = table.COLUMNS
+const table = TABLES.ITEMS;
+const cols = table.COLUMNS;
 
 export function getSelectAllItemsQuery() {
     return squel.select()
         .from(table.NAME)
-        .toString()
+        .toString();
 }
 
 export function getSelectItemByIdQuery(id) {
     return squel.select()
         .from(table.NAME)
         .where(`id = '${id}'`)
-        .toString()
+        .toString();
 }
 
 export function getInsertItemQuery(values) {
@@ -24,7 +24,7 @@ export function getInsertItemQuery(values) {
         .into(table.NAME)
         .setFields(values)
         .returning('*')
-        .toString()
+        .toString();
 }
 
 export function getDeleteItemByIdQuery(id) {
@@ -32,7 +32,7 @@ export function getDeleteItemByIdQuery(id) {
         .from(table.NAME)
         .where(`id = '${id}'`)
         .returning('*')
-        .toString()
+        .toString();
 }
 
 export function getUpdateItemByIdQuery(id, values) {
@@ -41,20 +41,20 @@ export function getUpdateItemByIdQuery(id, values) {
         .setFields(values)
         .where(`id = '${id}'`)
         .returning('*')
-        .toString()
+        .toString();
 }
 
-export function getSelectSomeItemsIdsQuery(ids) {
+export function getSelectItemsByIdsQuery(ids) {
     return squel.select()
         .field('id')
         .from(table.NAME)
         .where(`id in (${ids.map(id => `'${id}'`)})`)
-        .toString()
+        .toString();
 }
 
 export function getSelectItemByNameQuery(name) {
     return squel.select()
         .from(table.NAME)
         .where(`${cols.NAME} = '${name}'`)
-        .toString()
+        .toString();
 }

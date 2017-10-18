@@ -1,2 +1,2 @@
-export * from './tables'
-export * from './routes'
+export * from './tables';
+export * from './routes';

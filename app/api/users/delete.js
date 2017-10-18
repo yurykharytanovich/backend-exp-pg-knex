@@ -1,94 +1,86 @@
-import { oneOrNone, one, manyOrNone } from '../../db'
-import { ROUTES } from '../../constants'
-import { isValidUUID } from '../../helpers'
-import { success, reject } from '../'
-import {
-    getDeleteUserByIdQuery,
-    getSelectUserByIdQuery,
-    getSelectItemByIdQuery,
-    getDeleteAllItemsOfUserQuery,
-    getDeleteUserItemQuery,
-    getSelectUserItemQuery,
-    getDeleteAllItemsFromUserQuery
-} from '../../sql-helpers'
+import { ROUTES } from '../../constants';
+import { isValidUUID } from '../../helpers';
+import { success, reject } from '../';
+import * as UsersService from '../../services/users';
+import { getItem } from '../../services';
 
 export async function deleteUser (req, res) {
     try {
-        const id = req.params[ROUTES.USERS.IDp]
+        const userId = req.params[ROUTES.USERS.ID];
 
-        if(!isValidUUID(id)) {
-            return reject(res, { id }, `Bad ${[ROUTES.USERS.IDp]} passed`)
+        if(!isValidUUID(userId)) {
+            return reject(res, { userId }, `Bad ${ROUTES.USERS.ID} passed`);
         }
 
-        let user = await oneOrNone(getSelectUserByIdQuery(id))
+        let user = await UsersService.getUser(userId);
         if(!user) {
-            return reject(res, { id }, 'User with passed id does not exist.')
+            return reject(res, { userId }, 'User with passed id does not exist.');
         }
 
-        await manyOrNone(getDeleteAllItemsOfUserQuery(id))
+        await UsersService.deleteAllItemsOfUser(userId);
 
-        user = await one(getDeleteUserByIdQuery(id))
+        user = await UsersService.deleteUser(userId);
 
-        return success(res, { user })
+        return success(res, { user });
     } catch (error) {
-        return reject(res, { error }, 'Delete NOT OK')
+        return reject(res, { error }, 'Delete NOT OK');
     }
 }
 
-export async function deleteItemFromUser (req, res) {
+export async function deleteItemOfUser (req, res) {
     try {
-        const userId =  req.params[ROUTES.USERS.IDp]
-        const itemId =  req.params[ROUTES.ITEMS.IDp]
+        const userId =  req.params[ROUTES.USERS.ID];
+        const itemId =  req.params[ROUTES.ITEMS.ID];
 
         if(!isValidUUID(userId)) {
-            return reject(res, { userId }, `Bad ${[ROUTES.USERS.IDp]} passed`)
+            return reject(res, { userId }, `Bad ${ROUTES.USERS.ID} passed`);
         }
 
         if(!isValidUUID(itemId)) {
-            return reject(res, { itemId }, `Bad ${[ROUTES.ITEMS.IDp]} passed`)
+            return reject(res, { itemId }, `Bad ${ROUTES.ITEMS.ID} passed`);
         }
 
-        const user = await oneOrNone(getSelectUserByIdQuery(userId))
+        const user = await UsersService.getUser(userId);
         if(!user) {
-            return reject(res, { userId }, 'User with passed id does not exist.')
+            return reject(res, { userId }, 'User with passed id does not exist.');
         }
 
-        const item = await oneOrNone(getSelectItemByIdQuery(itemId))
+        const item = await getItem(itemId);
         if(!item) {
-            return reject(res, { itemId }, 'Item with passed id does not exist.')
+            return reject(res, { itemId }, 'Item with passed id does not exist.');
         }
 
-        const userItem = await oneOrNone(getSelectUserItemQuery(userId, itemId))
+        const userItem = await UsersService.getItemOfUser(userId, itemId);
         if(!userItem) {
-            return reject(res, {}, 'Passed item is not set to this user.')
+            return reject(res, {}, 'Passed item is not set to this user.');
         }
 
-        const result = await oneOrNone(getDeleteUserItemQuery(userId, itemId))
+        const result = await UsersService.deleteItemOfUser(userId, itemId);
 
-        return success(res, { result })
+        return success(res, { result });
     } catch (error) {
-        return reject(res, { error }, 'Delete NOT OK')
+        return reject(res, { error }, 'Delete NOT OK');
     }
 }
 
-export async function deleteAllItemsFromUser (req, res) {
+export async function deleteAllItemsOfUser (req, res) {
     try {
-        const userId =  req.params[ROUTES.USERS.IDp]
+        const userId =  req.params[ROUTES.USERS.ID];
 
         if(!isValidUUID(userId)) {
-            return reject(res, { userId }, `Bad ${[ROUTES.USERS.IDp]} passed` )
+            return reject(res, { userId }, `Bad ${ROUTES.USERS.ID} passed` );
         }
 
-        const user = await oneOrNone(getSelectUserByIdQuery(userId))
+        const user = await UsersService.getUser(userId);
 
         if(!user) {
-            return reject(res, { userId }, 'User with passed id does not exist.')
+            return reject(res, { userId }, 'User with passed id does not exist.');
         }
 
-        const result = await manyOrNone(getDeleteAllItemsFromUserQuery(userId))
+        const result = await UsersService.deleteAllItemsOfUser(userId);
 
-        return success(res, { result })
+        return success(res, { result });
     } catch (error) {
-        return reject(res, { error }, 'Delete NOT OK')
+        return reject(res, { error }, 'Delete NOT OK');
     }
 }
