@@ -1,14 +1,14 @@
 branch-defaults:
   default:
-    environment: backendExpPgKnex1-env
+    environment: sandboxapplication-env1
   master:
-    environment: backendExpPgKnex1-env
+    environment: sandboxapplication-env1
 environment-defaults:
-  backendExpPgKnex1-env:
+  sandboxapplication-env1:
     branch: master
     repository: backend-exp-pg-knex
 global:
-  application_name: backend-exp-pg-knex-1
+  application_name: SandboxApplication
   default_ec2_keyname: null
   default_platform: arn:aws:elasticbeanstalk:eu-west-2::platform/Node.js running on
     64bit Amazon Linux/4.3.0
