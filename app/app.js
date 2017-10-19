@@ -7,15 +7,15 @@ import api from './api';
 const env = process.env.NODE_ENV || 'development';
 const app = express();
 
-if (env === 'production') {
-    app.use(function (req, res, next) {
-        if (req.headers['x-forwarded-proto'] !== 'https') {
-            return res.redirect(['https://', req.get('Host'), req.url].join(''));
-        }
-
-        return next();
-    });
-}
+// if (env === 'production') {
+//     app.use(function (req, res, next) {
+//         if (req.headers['x-forwarded-proto'] !== 'https') {
+//             return res.redirect(['https://', req.get('Host'), req.url].join(''));
+//         }
+//
+//         return next();
+//     });
+// }
 
 app.use(cors());
 app.use(bodyParser.json());
