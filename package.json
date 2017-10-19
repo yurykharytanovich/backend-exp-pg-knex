@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf dist && babel app --presets babel-preset-es2015 --out-dir dist --ignore \"**/*.test.js\" ",
     "dev": "nodemon --watch app --exec babel-node app/server.js --inspect=9222",
-    "start": "yarn run build && node dist/server.js",
+    "start": "yarn run build && yarn run up && node dist/server.js",
     "fill-mock": "./node_modules/.bin/babel-node app/mock-data/fill.js",
     "clear-mock": "./node_modules/.bin/babel-node app/mock-data/clear.js",
     "refill-mock": "npm run clear-mock && npm run fill-mock",
