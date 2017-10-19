@@ -8,7 +8,7 @@ environment-defaults:
     branch: master
     repository: eb-nodejs-test
 global:
-  application_name: backendExpPgKnex
+  application_name: backend-exp-pg-knex
   default_ec2_keyname: null
   default_platform: arn:aws:elasticbeanstalk:eu-west-2::platform/Node.js running on
     64bit Amazon Linux/4.3.0
