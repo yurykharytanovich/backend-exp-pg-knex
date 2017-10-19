@@ -4,9 +4,11 @@ machine:
 
   environment:
     DATABASE_URL: postgresql://ubuntu:@127.0.0.1:5432/circle_test
-    host: 127.0.0.1
-    user: ubuntu
-    password:
+    DB_HOST: 127.0.0.1
+    DB_USER: ubuntu
+    DB_PASS:
+    DB_NAME: circle_test
+    DB_MIGR: migration
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
 
 dependencies:
