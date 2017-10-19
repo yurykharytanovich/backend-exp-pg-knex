@@ -18,7 +18,7 @@
     "migration": "knex migrate:make",
     "remigrate": "npm run down-all && npm run up",
     "test": "cross-env NODE_ENV=test mocha ./app/**/**/*.test.js ./app/**/*.test.js --compilers js:babel-core/register --require babel-polyfill || exit 0",
-    "test-pre-commit": "cross-env NODE_ENV=test mocha ./app/**/**/*.test.js ./app/**/*.test.js --compilers js:babel-core/register --require babel-polyfill || exit 0",
+    "test-pre-commit": "cross-env NODE_ENV=test mocha ./app/**/**/*.test.js ./app/**/*.test.js --compilers js:babel-core/register --require babel-polyfill",
     "eslint": "./node_modules/.bin/eslint --ext .js --color ./ || exit 0",
     "eslint-pre-commit": "./node_modules/.bin/eslint --ext .js --color ./"
   },
