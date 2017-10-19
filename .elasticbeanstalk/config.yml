@@ -1,14 +1,14 @@
 branch-defaults:
   default:
-    environment: backendExpPgKnex-env
+    environment: backendExpPgKnex1-env
   master:
-    environment: backendExpPgKnex-env
+    environment: backendExpPgKnex1-env
 environment-defaults:
-  backendExpPgKnex-env:
+  backendExpPgKnex1-env:
     branch: master
     repository: backend-exp-pg-knex
 global:
-  application_name: backend-exp-pg-knex
+  application_name: backend-exp-pg-knex-1
   default_ec2_keyname: null
   default_platform: arn:aws:elasticbeanstalk:eu-west-2::platform/Node.js running on
     64bit Amazon Linux/4.3.0
